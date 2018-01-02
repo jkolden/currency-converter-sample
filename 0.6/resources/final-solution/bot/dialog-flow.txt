@@ -1,0 +1,76 @@
+# metadata: information about the flow
+# This flow is a simple currency converter built for training puposes
+# Its meant to be a tester UI for a custom compponent built during a
+# hands on. So don't expect this to be a final solution or perfect
+metadata:
+  platformVersion: 1.0
+main: true
+name: CurrencyConverter
+#context: Define the variables which will used throughout the dialog flow here.
+context:
+  variables:
+    iResult: "nlpresult"
+    targetCurrency: "TARGET_CURRENCY"
+states: 
+  welcome:
+    component: "System.Output"
+    properties:
+      text: "Hi fellow globetotter. Let me serve you with a free currency conversion quote. I can convert from and to \n\n${targetCurrency.type.enumValues}"
+      keepTurn: true
+    transitions: {}   
+  welcome2:
+    component: "System.Output"
+    properties:
+      text: "For example, you can ask: \n\n \"How much is 100$ in Euro?\", or \n \"Whats 50GBP in USD?\""
+    transitions: {}      
+  intent:
+    component: "System.Intent"
+    properties:
+      confidenceThreshold: 0.4
+      variable: "iResult"
+    transitions:
+      actions:
+        ConvertCurrency: "convert"
+        unresolvedIntent: "dunno"  
+  convert:
+    component: "currency.converter"
+    properties:
+      targetCurrencyEntity: "TARGET_CURRENCY"
+      nlpresultVariable: "iResult"
+      baseCurrency: "${iResult.value.entityMatches['CURRENCY'][0].currency}"
+      baseAmount: "${iResult.value.entityMatches['CURRENCY'][0].amount}"
+    transitions:
+      actions:
+        error:  "error"
+        missingInformation: "missingInformation"
+        conversionSuccess: "conversionSuccess"        
+  missingInformation:
+    component: "System.Output"
+    properties:
+      text: "Please try again"
+    transitions: {}
+  resetVariables:
+    component: "System.ResetVariables"
+    properties:
+      variableList: "iResult"
+    transitions:
+      next: "intent"
+  conversionSuccess:
+    component: "System.Output"
+    properties:
+      text: "Thank you. Please recommend my services to your friends."
+    transitions:
+      return: "done"      
+  error:
+    component: "System.Output"
+    properties:
+      text: "Sorry, it seems I am out of order. Please try again later"
+    transitions:
+      return: "done"            
+  dunno:
+    component: "System.Output"
+    properties:
+      text: "Sorry, I did not get that. Can you try again?"
+    transitions:
+      next: "intent"
+      

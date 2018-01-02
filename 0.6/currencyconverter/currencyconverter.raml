@@ -1,0 +1,29 @@
+#%RAML 0.8
+title: Currency Converter API
+version: 1.0
+baseUri: /mobile/custom/currencyconverter
+protocols: [HTTPS]
+/converter:
+  post:
+    description: |
+      Converts base currency and values into target currencies and values
+      
+    protocols: [HTTPS]
+    body:
+      application/json:
+        example: |
+          { 
+            "date" : "latest",
+            "base":{"currency":"USD", "amount":100},
+            "target":["EUR","GBP"]  
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "date":"2017-07-24",
+                "base":{"currency":"EUR","amount":100},
+                "conversions":[{"currency":"GBP","amount": 85},{"currency":"USD"."amount": 105}]
+              }

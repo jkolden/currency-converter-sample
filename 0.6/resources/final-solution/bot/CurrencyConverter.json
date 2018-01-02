@@ -1,0 +1,209 @@
+{
+  "name" : "CurrencyConverter",
+  "description" : "Bot that converts currencies from a base currency to one or more target currencies.\n@author Frank Nimphius",
+  "type" : "USER",
+  "intents" : [ {
+    "name" : "ConvertCurrency",
+    "paramsList" : [ {
+      "entity" : {
+        "name" : "TARGET_CURRENCY",
+        "type" : "ENUMVALUES",
+        "enumValues" : "USD{$:US Dollar:American Dollar},EUR{€:EURO:Euro:European Currency},CHF{Swiss Franc:Franc:Francs:Swiss Francs},GBP{British Pound:Great Britain Pound:Pound Sterling:Quid:£},CAD{Canadian Dollar:C$},CZK{Czech koruna:Koruna:Czech Republic Koruna},DKK{Danish krone:Denmark krone:Danish currency},HKD{Hong Kong dollar:Hong Kong Currency},CNY{Chinese Yuan Renminbi:Chinese Yuan:Chinese Renminibi:Renminibi}",
+        "ruleParameters" : null,
+        "parentEntity" : null,
+        "patternExpression" : null
+      },
+      "name" : "CURRENCIES",
+      "isRequired" : true,
+      "required" : true
+    }, {
+      "entity" : {
+        "name" : "CURRENCY",
+        "type" : "SYSTEM",
+        "enumValues" : null,
+        "ruleParameters" : null,
+        "parentEntity" : null,
+        "patternExpression" : null
+      },
+      "name" : "CURRENCY",
+      "isRequired" : true,
+      "required" : true
+    } ],
+    "type" : "NLPIntent"
+  } ],
+  "entities" : [ {
+    "name" : "TARGET_CURRENCY",
+    "type" : "ENUMVALUES",
+    "enumValues" : "USD{$:US Dollar:American Dollar},EUR{€:EURO:Euro:European Currency},CHF{Swiss Franc:Franc:Francs:Swiss Francs},GBP{British Pound:Great Britain Pound:Pound Sterling:Quid:£},CAD{Canadian Dollar:C$},CZK{Czech koruna:Koruna:Czech Republic Koruna},DKK{Danish krone:Denmark krone:Danish currency},HKD{Hong Kong dollar:Hong Kong Currency},CNY{Chinese Yuan Renminbi:Chinese Yuan:Chinese Renminibi:Renminibi}",
+    "ruleParameters" : null,
+    "parentEntity" : null,
+    "patternExpression" : null
+  } ],
+  "dialog" : [ {
+    "metadata" : {
+      "platformVersion" : "1.0"
+    },
+    "main" : true,
+    "name" : "CurrencyConverter",
+    "context" : {
+      "variables" : {
+        "iResult" : "nlpresult",
+        "targetCurrency" : "TARGET_CURRENCY"
+      }
+    },
+    "states" : {
+      "welcome" : {
+        "component" : "System.Output",
+        "properties" : {
+          "text" : "Hi fellow globetotter. Let me serve you with a free currency conversion quote. I can convert from and to \n\n${targetCurrency.type.enumValues}",
+          "keepTurn" : true
+        },
+        "transitions" : { }
+      },
+      "welcome2" : {
+        "component" : "System.Output",
+        "properties" : {
+          "text" : "For example, you can ask: \n\n \"How much is 100$ in Euro?\", or \n \"Whats 50GBP in USD?\""
+        },
+        "transitions" : { }
+      },
+      "intent" : {
+        "component" : "System.Intent",
+        "properties" : {
+          "confidenceThreshold" : 0.4,
+          "variable" : "iResult"
+        },
+        "transitions" : {
+          "actions" : {
+            "ConvertCurrency" : "convert",
+            "unresolvedIntent" : "dunno"
+          }
+        }
+      },
+      "convert" : {
+        "component" : "currency.converter",
+        "properties" : {
+          "targetCurrencyEntity" : "TARGET_CURRENCY",
+          "nlpresultVariable" : "iResult",
+          "baseCurrency" : "${iResult.value.entityMatches['CURRENCY'][0].currency}",
+          "baseAmount" : "${iResult.value.entityMatches['CURRENCY'][0].amount}"
+        },
+        "transitions" : {
+          "actions" : {
+            "error" : "error",
+            "missingInformation" : "missingInformation",
+            "conversionSuccess" : "conversionSuccess"
+          }
+        }
+      },
+      "missingInformation" : {
+        "component" : "System.Output",
+        "properties" : {
+          "text" : "Please try again"
+        },
+        "transitions" : { }
+      },
+      "resetVariables" : {
+        "component" : "System.ResetVariables",
+        "properties" : {
+          "variableList" : "iResult"
+        },
+        "transitions" : {
+          "next" : "intent"
+        }
+      },
+      "conversionSuccess" : {
+        "component" : "System.Output",
+        "properties" : {
+          "text" : "Thank you. Please recommend my services to your friends."
+        },
+        "transitions" : {
+          "return" : "done"
+        }
+      },
+      "error" : {
+        "component" : "System.Output",
+        "properties" : {
+          "text" : "Sorry, it seems I am out of order. Please try again later"
+        },
+        "transitions" : {
+          "return" : "done"
+        }
+      },
+      "dunno" : {
+        "component" : "System.Output",
+        "properties" : {
+          "text" : "Sorry, I did not get that. Can you try again?"
+        },
+        "transitions" : {
+          "next" : "intent"
+        }
+      }
+    }
+  } ],
+  "componentServices" : [ {
+    "name" : "CurrencyConverterCCS",
+    "description" : "Converts base currency to target currency ",
+    "url" : "https://mcsnas-a429941.mobileenv.us2.oraclecloud.com:443/mobile/custom/converterccs/components",
+    "version" : "1.0",
+    "headers" : [ ],
+    "credentials" : {
+      "type" : "mcs",
+      "mobileBackendId" : "363ce409-5cb0-454e-85cf-3b39e3ac1c6f",
+      "anonymous" : true,
+      "username" : null,
+      "anonymousKeyKey" : null,
+      "passwordKey" : null
+    }
+  } ],
+  "trainingDataList" : [ {
+    "sentence" : "What is the value of 100 Euro in USD and Swiss Franken",
+    "intent" : "ConvertCurrency",
+    "namedEntities" : [ ]
+  }, {
+    "sentence" : "What is the market value of 100 Euro compared to Dollar and rouble",
+    "intent" : "ConvertCurrency",
+    "namedEntities" : [ ]
+  }, {
+    "sentence" : "How much is 100 USD in Euro",
+    "intent" : "ConvertCurrency",
+    "namedEntities" : [ ]
+  }, {
+    "sentence" : "Please translate 100 Yen to US Dollar for me",
+    "intent" : "ConvertCurrency",
+    "namedEntities" : [ ]
+  }, {
+    "sentence" : "Please convert 50Euro to Dollar",
+    "intent" : "ConvertCurrency",
+    "namedEntities" : [ ]
+  }, {
+    "sentence" : "Whats the equivalent of 50 Euro in Swiss Franc",
+    "intent" : "ConvertCurrency",
+    "namedEntities" : [ ]
+  } ],
+  "channels" : [ {
+    "name" : "FacebookConverter",
+    "enabled" : true,
+    "config" : {
+      "type" : "facebook"
+    }
+  }, {
+    "name" : "System_Bot_Test",
+    "description" : "Used by the BOT test feature. If it is disabled, the test UI will not work for this BOT.",
+    "enabled" : true,
+    "config" : {
+      "type" : "test"
+    }
+  } ],
+  "settings" : {
+    "createdOn" : "2017-08-11T07:26:49.629Z",
+    "updatedOn" : "2017-08-11T07:26:49.629Z",
+    "links" : null,
+    "settings" : {
+      "Multistage_Pipeline" : true,
+      "Verbose_Output" : false,
+      "Result_Size" : 10,
+      "Pipeline_Output_Size" : 100
+    }
+  }
+}

@@ -1,0 +1,40 @@
+
+{
+    "apiName":"currencyconverter",
+    "apiVersion":"1.0",
+    "apiId":"16799b7b-76ca-4f35-be05-b84610085057",
+    "baseUrl":"http://<MCS_SERVER>:<MCS_PORT>/",
+    "authorization":{
+        "mobileBackendID":"<YOUR_MOBILE_BACKEND_ID>",
+        "anonymousKey":"<MBE_ANONYMOUS_KEY>",
+        "oauth":{
+            "tokenEndpoint":"<MBE_OAUTH_TOKEN_ENDPOINT>",
+            "clientId":"<MBE_OAUTH_CLIENT_ID>",
+            "clientSecret":"<MBE_OAUTH_CLIENT_ID>"
+        }
+    },
+    "container":{
+        "oracleMobileApiName":"OracleMobileAPI",
+        "port":4000
+    },
+    "deploy":{
+        "tempDirectory":"/tmp/mcs-deploy"
+    },
+    "tests":{
+        "postConverter":{
+            "method":"POST",
+            "resource":"/converter",
+            "payload":{
+                "date":"latest",
+                "base":{
+                    "currency":"USD",
+                    "amount":100
+                },
+                "target":[
+                    "EUR",
+                    "GBP"
+                ]
+            }
+        }
+    }
+}

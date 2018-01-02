@@ -1,0 +1,18 @@
+{
+  "name": "converterccs",
+  "version": "1.0.0",
+  "description": "Oracle Intelligent Bots currency converter component service",
+  "main": "converterccs.js",
+  "repository": {},
+  "license": "ISC",
+  "dependencies": {
+    "joi": "^9.2.0",
+    "log4js": "^1.1.1"
+  },
+  "oracleMobile": {
+    "dependencies": {
+      "apis": {"/mobile/custom/currencyconverter": "1.0"},
+      "connectors": {}
+    }
+  }
+}
