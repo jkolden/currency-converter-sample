@@ -13,7 +13,7 @@ module.exports = function(service) {
 
 		/**
 		* custom API function that calls OMCe connector to perform currency cionversion
-		* using fixer.io website. This function us channel agnostic, which means it can
+		* using fixer.io website. This function is channel agnostic, which means it can
 		* be called from a mobile app, Oracle MAX, Oracle ABCS, chatbots etc.
 		*
 		* author: Frank Nimphius, 2017
