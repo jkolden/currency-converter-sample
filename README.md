@@ -1,9 +1,9 @@
-#READ ME
+READ ME
 --------
 
-##Oracle Intelligent Bots Version 0.6
+Oracle Intelligent Bots Version 0.6
 
-###Install:
+Install:
 --------
 
 1. Import resources 0.6/final-solution/package-currencyConverterMBE.zip into Oracle Mobile Cloud. 
