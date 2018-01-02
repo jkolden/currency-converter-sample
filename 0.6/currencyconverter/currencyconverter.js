@@ -12,7 +12,7 @@
 module.exports = function(service) {
 
 		/**
-		* custom API function that calls OMCe connector to perform currency cionversion
+		* custom API function that calls OMCe connector to perform currency conversion
 		* using fixer.io website. This function is channel agnostic, which means it can
 		* be called from a mobile app, Oracle MAX, Oracle ABCS, chatbots etc.
 		*
@@ -50,7 +50,8 @@ module.exports = function(service) {
                   console.info("target currency string is \"" + targetCurrenciesString + "\"");
 
                     //invoke currency converter for the date value that was requested. The
-                    //date value is saved as the resource of the request
+                    //date value is saved as the resource of the request.
+                    //This is where the request to the connector happens:
                     req.oracleMobile.connectors.foreignexchange.get(resource, null, {
                       qs: {
                         base: baseCurrency,

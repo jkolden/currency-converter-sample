@@ -12,7 +12,7 @@ Oracle Intelligent Bots Version 0.6
 
 4. Navigate to the MBE in MCS and open it. The MBE ID, base URL and anonymous key are exposed under "Settings".
 
-### Notes: 
+### Notes:
 For this demo, the shared api (currencyconverter) accesses the *Connector* in Oracle Mobile Cloud Service. For this reason there is a mobile dependency created in the package.json file:
 
 ~~~~ {
@@ -25,6 +25,17 @@ For this demo, the shared api (currencyconverter) accesses the *Connector* in Or
       "apis" : { },
       "connectors" : {"/mobile/connector/foreignexchange":"1.0"}
     }
+  }
+}
+~~~~
+
+The custom component (converterccs) accesses the *shared api* and therefore there is a dependency on that api in the package.json file:
+
+~~~~
+"oracleMobile": {
+  "dependencies": {
+    "apis": {"/mobile/custom/currencyconverter": "1.0"},
+    "connectors": {}
   }
 }
 ~~~~
